@@ -1,10 +1,9 @@
 #include "Graph.h"
-
 #include <iostream>
 #include <set>
 using namespace std;
 
-int Graph::dijkstra(int src, int dest, vector<sf::VertexArray>& lines) {
+int Graph::dijkstra(int src, int dest, vector<sf::VertexArray>& lines, map<pair<int, int>, int>& lineMapper) {
     if (adjList[src].empty() || adjList[dest].empty()) {
         return -1;
     }
@@ -31,13 +30,14 @@ int Graph::dijkstra(int src, int dest, vector<sf::VertexArray>& lines) {
             }
         }
     }
-    int vertex = p[dest];
-    while (vertex != -1) {
-        lines[vertex][0].color = sf::Color::Blue;
-        lines[vertex][1].color = sf::Color::Blue;
-        lines[vertex][0].color = sf::Color::Blue;
-        lines[vertex][1].color = sf::Color::Blue;
-        cout << vertex << " ";
+    //changes color of the path
+    int vertex = dest;
+    while (p[vertex] != -1) {
+        lines[lineMapper[{p[vertex], vertex}]][0].color = sf::Color::Blue;
+        lines[lineMapper[{p[vertex], vertex}]][1].color = sf::Color::Blue;
+        lines[lineMapper[{p[vertex], vertex}]][0].color = sf::Color::Blue;
+        lines[lineMapper[{p[vertex], vertex}]][1].color = sf::Color::Blue;
+        cout << "Lines:" << p[vertex] << " to " << vertex << endl;
         vertex = p[vertex];
     }
     return dist[dest];

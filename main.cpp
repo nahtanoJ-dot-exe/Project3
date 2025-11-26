@@ -3,10 +3,9 @@
 #include <string>
 #include <iostream>
 #include <cmath>
-#include <unordered_map>
+#include <map>
 #include <fstream>
 #include <random>
-#include <set>
 
 #include "Graph.h"
 
@@ -25,7 +24,7 @@ int main() {
 
     //gives each vertex an ID
     unordered_map<unsigned int, sf::CircleShape> vertexMapper;
-    int vertices = 10;
+    int vertices = 100;
 
     for (unsigned int i = 0; i < vertices; i++) {
         float randomX = dist(gen);
@@ -39,30 +38,33 @@ int main() {
     }
     circles[0].setRadius(5.f);
     circles[1].setRadius(5.f);
+    circles[0].setFillColor(sf::Color::Blue);
+    circles[1].setFillColor(sf::Color::Blue);
 
     vector<Edge> edges;
     vector<sf::VertexArray> lines;
-    set<pair<sf::Vector2f, sf::Vector2f>> repeats;
+    map<pair<int, int>, int> lineMapper;
     for (unsigned int i = 0; i < circles.size(); i++) {
         for (unsigned int j = i + 1; j < circles.size(); j++) {
-            if (abs(circles[j].getPosition().x - circles[i].getPosition().x) <= 300 && abs(circles[j].getPosition().y - circles[i].getPosition().y) <= 300) {
+            //drawing lines
+            if (abs(circles[j].getPosition().x - circles[i].getPosition().x) <= 100 && abs(circles[j].getPosition().y - circles[i].getPosition().y) <= 100) {
                 sf::VertexArray line(sf::PrimitiveType::LineStrip, 2);
                 line[0].color = sf::Color::Red;
                 line[1].color = sf::Color::Red;
                 line[0].position = sf::Vector2f(circles[i].getPosition()); // Starting point
                 line[1].position = sf::Vector2f(circles[j].getPosition()); // Ending point
                 lines.push_back(line);
-
                 //creating edges
-            }
-        }
-        for (unsigned int k = 0; k < circles.size(); k++) {
-            if (abs(circles[k].getPosition().x - circles[i].getPosition().x) <= 300 && abs(circles[k].getPosition().y - circles[i].getPosition().y) <= 300 && i != k) {
-                float x_squared = pow(abs(circles[k].getPosition().x - circles[i].getPosition().x), 2);
-                float y_squared = pow(abs(circles[k].getPosition().y - circles[i].getPosition().y), 2);
+                float x_squared = pow(abs(circles[j].getPosition().x - circles[i].getPosition().x), 2);
+                float y_squared = pow(abs(circles[j].getPosition().y - circles[i].getPosition().y), 2);
                 float weight = pow(x_squared + y_squared, 0.5);
-                Edge edge(i, k, weight);
-                edges.push_back(edge);
+                Edge edge1(i, j, weight);
+                Edge edge2(j, i, weight);
+                edges.push_back(edge1);
+                edges.push_back(edge2);
+                lineMapper[{i, j}] = lines.size() - 1;
+                lineMapper[{j, i}] = lines.size() - 1;
+
             }
         }
     }
@@ -73,7 +75,7 @@ int main() {
 
 
     Graph graph(edges, vertices);
-    cout << graph.dijkstra(0, 1, lines);
+    cout << graph.dijkstra(0, 1, lines, lineMapper);
     // Main loop
     while (window.isOpen()) {
 

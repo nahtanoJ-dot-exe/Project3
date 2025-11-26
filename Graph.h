@@ -3,6 +3,7 @@
 //
 #include <functional>
 #include <queue>
+#include <map>
 #include <utility>
 #include <vector>
 #include <SFML/Graphics.hpp>
@@ -30,7 +31,7 @@ public:
             adjList[edge.src].push_back(make_pair(edge.dest, edge.weight));
         }
     }
-    int dijkstra(int src, int dest, vector<sf::VertexArray>&);
+    int dijkstra(int src, int dest, vector<sf::VertexArray>& lines, map<pair<int, int>, int>& lineMapper);
 };
 
 
