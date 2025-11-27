@@ -38,7 +38,7 @@ int main() {
     circles[0].setRadius(5.f);
     circles[1].setRadius(5.f);
     circles[0].setFillColor(sf::Color::Blue);
-    circles[1].setFillColor(sf::Color::Blue);
+    circles[1].setFillColor(sf::Color::White);
 
     vector<Edge> edges;
     vector<sf::VertexArray> lines;
@@ -46,7 +46,7 @@ int main() {
     for (unsigned int i = 0; i < circles.size(); i++) {
         for (unsigned int j = i + 1; j < circles.size(); j++) {
             //drawing lines
-            if (abs(circles[j].getPosition().x - circles[i].getPosition().x) <= 30 && abs(circles[j].getPosition().y - circles[i].getPosition().y) <= 30) {
+            if (abs(circles[j].getPosition().x - circles[i].getPosition().x) <= 40 && abs(circles[j].getPosition().y - circles[i].getPosition().y) <= 40) {
                 sf::VertexArray line(sf::PrimitiveType::LineStrip, 2);
                 line[0].color = sf::Color::Red;
                 line[1].color = sf::Color::Red;
@@ -74,7 +74,8 @@ int main() {
 
 
     Graph graph(edges, vertices);
-    cout << graph.dijkstra(0, 1, lines, lineMapper);
+    cout << "Two-way: " << endl << graph.two_way_dijkstra(0, 1, lines, lineMapper) << endl;
+    cout << "One-way: " << endl << graph.dijkstra(0, 1, lines, lineMapper) << endl;
     // Main loop
     while (window.isOpen()) {
 

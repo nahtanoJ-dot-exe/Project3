@@ -32,6 +32,7 @@ public:
         }
     }
     int dijkstra(int src, int dest, vector<sf::VertexArray>& lines, map<pair<int, int>, int>& lineMapper);
+    int two_way_dijkstra(int src, int dest, vector<sf::VertexArray>& lines,map<pair<int, int>, int>& lineMapper);
 };
 
 
