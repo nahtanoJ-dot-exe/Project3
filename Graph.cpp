@@ -30,6 +30,10 @@ int Graph::dijkstra(int src, int dest, vector<sf::VertexArray>& lines, map<pair<
             }
         }
     }
+    if (dist[dest] == INT_MAX) {
+        cout << "No path found" << endl;
+        return -1;
+    }
     //changes color of the path
     int vertex = dest;
     while (p[vertex] != -1) {
@@ -37,7 +41,7 @@ int Graph::dijkstra(int src, int dest, vector<sf::VertexArray>& lines, map<pair<
         lines[lineMapper[{p[vertex], vertex}]][1].color = sf::Color::Blue;
         lines[lineMapper[{p[vertex], vertex}]][0].color = sf::Color::Blue;
         lines[lineMapper[{p[vertex], vertex}]][1].color = sf::Color::Blue;
-        cout << "Lines:" << p[vertex] << " to " << vertex << endl;
+        cout << "Lines:" << vertex << " to " << p[vertex] << endl;
         vertex = p[vertex];
     }
     return dist[dest];

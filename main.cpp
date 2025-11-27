@@ -6,7 +6,6 @@
 #include <map>
 #include <fstream>
 #include <random>
-
 #include "Graph.h"
 
 using namespace std;
@@ -24,7 +23,7 @@ int main() {
 
     //gives each vertex an ID
     unordered_map<unsigned int, sf::CircleShape> vertexMapper;
-    int vertices = 100;
+    int vertices = 1000;
 
     for (unsigned int i = 0; i < vertices; i++) {
         float randomX = dist(gen);
@@ -47,7 +46,7 @@ int main() {
     for (unsigned int i = 0; i < circles.size(); i++) {
         for (unsigned int j = i + 1; j < circles.size(); j++) {
             //drawing lines
-            if (abs(circles[j].getPosition().x - circles[i].getPosition().x) <= 100 && abs(circles[j].getPosition().y - circles[i].getPosition().y) <= 100) {
+            if (abs(circles[j].getPosition().x - circles[i].getPosition().x) <= 30 && abs(circles[j].getPosition().y - circles[i].getPosition().y) <= 30) {
                 sf::VertexArray line(sf::PrimitiveType::LineStrip, 2);
                 line[0].color = sf::Color::Red;
                 line[1].color = sf::Color::Red;
