@@ -64,8 +64,10 @@ int Graph::two_way_dijkstra(int src, int dest, vector<sf::VertexArray> &lines, m
     pq_dest.push(make_pair(0, dest));
     dist_src[src] = 0;
     dist_dest[dest] = 0;
+    set<int> visited_forward;
+    set<int> visited_backward;
     int mid_point;
-
+    int min_dist = INT_MAX;
 
     while (!pq_src.empty() && !pq_dest.empty()) {
         pair<int, int> current_src = pq_src.top();
@@ -73,14 +75,12 @@ int Graph::two_way_dijkstra(int src, int dest, vector<sf::VertexArray> &lines, m
         pq_src.pop();
         pq_dest.pop();
         int u_src = current_src.second; //vertex
-        int u_dest = current_dest.second;
+        int u_dest = current_dest.second; //vertex
 
-        auto it_src = adjList[u_src].begin();
-        auto it_dest = adjList[u_dest].begin();
+        visited_forward.insert(u_src);
+        visited_backward.insert(u_dest);
 
-        set<int> nearby_vertices;
-        bool mid_point_found = false;
-        for (; it_src != adjList[u_src].end() && it_dest != adjList[u_dest].end(); ++it_src, ++it_dest) {
+        for (auto it_src = adjList[u_src].begin(); it_src != adjList[u_src].end(); ++it_src) {
 
             int v_src = it_src->first; //neighbor
             int w_src = it_src->second; //weight
@@ -88,37 +88,31 @@ int Graph::two_way_dijkstra(int src, int dest, vector<sf::VertexArray> &lines, m
                 dist_src[v_src] = dist_src[u_src] + w_src;
                 pq_src.push(make_pair(dist_src[v_src], v_src));
                 p_src[v_src] = u_src;
-                if (nearby_vertices.count(v_src)) {
+                if (visited_backward.count(v_src) && dist_src[u_src] + w_src + dist_dest[v_src] < min_dist) {
                     mid_point = v_src;
-                    mid_point_found = true;
-                    cout << "Midpoint is: " << mid_point << endl;
-                    break;
+                    min_dist = dist_src[u_src] + dist_dest[v_src] + w_src;
                 }
-                nearby_vertices.erase(p_src[v_src]);
-                nearby_vertices.insert(u_src);
             }
+        }
+
+        for (auto it_dest = adjList[u_dest].begin(); it_dest != adjList[u_dest].end(); ++it_dest) {
             int v_dest = it_dest->first; //neighbor
             int w_dest = it_dest->second; //weight
             if (dist_dest[v_dest] > dist_dest[u_dest] + w_dest) {
                 dist_dest[v_dest] = dist_dest[u_dest] + w_dest;
                 pq_dest.push(make_pair(dist_dest[v_dest], v_dest));
                 p_dest[v_dest] = u_dest;
-                if (nearby_vertices.count(v_dest)) {
+                if (visited_forward.count(v_dest) && dist_dest[u_dest] + w_dest + dist_src[v_dest] < min_dist) {
                     mid_point = v_dest;
-                    mid_point_found = true;
-                    cout << "Midpoint is: " << mid_point << endl;
-                    break;
+                    min_dist = dist_dest[u_dest] + dist_src[v_dest] + w_dest;
                 }
-                nearby_vertices.erase(p_dest[v_dest]);
-                nearby_vertices.insert(u_dest);
             }
         }
-        //If two paths meet
-        if (mid_point_found) {
-            cout << "found mid-point" << endl;
+        if (dist_src[u_src] + dist_dest[u_dest] >= min_dist) {
             break;
         }
     }
+
     //changes color of the path
     int vertex_src = mid_point;
     int vertex_dest = mid_point;
@@ -139,5 +133,5 @@ int Graph::two_way_dijkstra(int src, int dest, vector<sf::VertexArray> &lines, m
         vertex_dest = p_dest[vertex_dest];
     }
     cout << dist_src[mid_point] << " / " << dist_dest[mid_point] << endl;
-    return dist_src[mid_point] + dist_dest[mid_point];
+    return min_dist;
 }
