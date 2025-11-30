@@ -61,8 +61,10 @@ int main() {
     cout << "Nodes in region: " << nodesInRegion.size() << endl;
 
     // pick src and dest from nodes in region
-    int src = nodesInRegion[0];
-    int dest = nodesInRegion[nodesInRegion.size() - 1];
+    int src_index = 0;
+    int dest_index = nodesInRegion.size() - 1;
+    int src = nodesInRegion[src_index];
+    int dest = nodesInRegion[dest_index];
 
     // create edges only for nodes in view
     vector<sf::VertexArray> lines;
@@ -133,6 +135,30 @@ int main() {
                     pathFound = true;
                     animating = true;
                     pathIndex = 0;
+                }
+                else if (key && key->code == sf::Keyboard::Key::Left) {
+                    if (src_index > 0) {
+                        src_index--;
+                        src = nodesInRegion[src_index];
+                    }
+                }
+                else if (key && key->code == sf::Keyboard::Key::Right) {
+                    if (src_index < nodesInRegion.size() - 1) {
+                        src_index++;
+                        src = nodesInRegion[src_index];
+                    }
+                }
+                else if (key && key->code == sf::Keyboard::Key::A) {
+                    if (dest_index > 0) {
+                        dest_index--;
+                        dest = nodesInRegion[dest_index];
+                    }
+                }
+                else if (key && key->code == sf::Keyboard::Key::D) {
+                    if (dest_index < nodesInRegion.size() - 1) {
+                        dest_index++;
+                        dest = nodesInRegion[dest_index];
+                    }
                 }
             }
         }
