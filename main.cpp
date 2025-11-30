@@ -137,6 +137,7 @@ int main() {
                         animating = true;
                         pathIndex = 0;
                     }
+                    //moving src back and forth
                     else if (key && key->code == sf::Keyboard::Key::Left) {
                         if (src_index > 0) {
                             src_index--;
@@ -149,6 +150,7 @@ int main() {
                             src = nodesInRegion[src_index];
                         }
                     }
+                    //moving dest back and forth
                     else if (key && key->code == sf::Keyboard::Key::A) {
                         if (dest_index > 0) {
                             dest_index--;
@@ -162,15 +164,14 @@ int main() {
                         }
                     }
                 }
+                //reset map
                 if (key && key->code == sf::Keyboard::Key::R) {
                     pathFound = false;
                     src_index = 0;
                     dest_index = nodesInRegion.size() - 1;
                     src = nodesInRegion[src_index];
                     dest = nodesInRegion[dest_index];
-                    for (unsigned int i = 0; i < pathLines.size(); i++) {
-                        pathLines.erase(pathLines.begin() + i);
-                    }
+                    pathLines.clear();
                 }
             }
         }
