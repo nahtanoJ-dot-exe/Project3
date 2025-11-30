@@ -111,53 +111,65 @@ int main() {
 
             if (event->is<sf::Event::KeyPressed>()) {
                 auto key = event->getIf<sf::Event::KeyPressed>();
-                if (key && key->code == sf::Keyboard::Key::Space && !pathFound) {
+                if (!pathFound) {
+                    if (key && key->code == sf::Keyboard::Key::Space) {
 
-                    // run two-way dijkstra
-                    cout << "\nRunning Two-Way Dijkstra..." << endl;
-                    auto start1 = chrono::high_resolution_clock::now();
-                    vector<int> path1 = graph.twoWayDijkstraPath(src, dest);
-                    auto end1 = chrono::high_resolution_clock::now();
-                    auto time1 = chrono::duration_cast<chrono::milliseconds>(end1 - start1);
+                        // run two-way dijkstra
+                        cout << "\nRunning Two-Way Dijkstra..." << endl;
+                        auto start1 = chrono::high_resolution_clock::now();
+                        vector<int> path1 = graph.twoWayDijkstraPath(src, dest);
+                        auto end1 = chrono::high_resolution_clock::now();
+                        auto time1 = chrono::duration_cast<chrono::milliseconds>(end1 - start1);
 
-                    // run one-way dijkstra
-                    cout << "Running One-Way Dijkstra..." << endl;
-                    auto start2 = chrono::high_resolution_clock::now();
-                    path = graph.dijkstraPath(src, dest);
-                    auto end2 = chrono::high_resolution_clock::now();
-                    auto time2 = chrono::duration_cast<chrono::milliseconds>(end2 - start2);
+                        // run one-way dijkstra
+                        cout << "Running One-Way Dijkstra..." << endl;
+                        auto start2 = chrono::high_resolution_clock::now();
+                        path = graph.dijkstraPath(src, dest);
+                        auto end2 = chrono::high_resolution_clock::now();
+                        auto time2 = chrono::duration_cast<chrono::milliseconds>(end2 - start2);
 
-                    cout << "\n===== RESULTS =====" << endl;
-                    cout << "Two-Way Dijkstra: " << time1.count() << " ms (path: " << path1.size() << " nodes)" << endl;
-                    cout << "One-Way Dijkstra: " << time2.count() << " ms (path: " << path.size() << " nodes)" << endl;
-                    cout << "===================" << endl;
+                        cout << "\n===== RESULTS =====" << endl;
+                        cout << "Two-Way Dijkstra: " << time1.count() << " ms (path: " << path1.size() << " nodes)" << endl;
+                        cout << "One-Way Dijkstra: " << time2.count() << " ms (path: " << path.size() << " nodes)" << endl;
+                        cout << "===================" << endl;
 
-                    pathFound = true;
-                    animating = true;
-                    pathIndex = 0;
-                }
-                else if (key && key->code == sf::Keyboard::Key::Left) {
-                    if (src_index > 0) {
-                        src_index--;
-                        src = nodesInRegion[src_index];
+                        pathFound = true;
+                        animating = true;
+                        pathIndex = 0;
+                    }
+                    else if (key && key->code == sf::Keyboard::Key::Left) {
+                        if (src_index > 0) {
+                            src_index--;
+                            src = nodesInRegion[src_index];
+                        }
+                    }
+                    else if (key && key->code == sf::Keyboard::Key::Right) {
+                        if (src_index < nodesInRegion.size() - 1) {
+                            src_index++;
+                            src = nodesInRegion[src_index];
+                        }
+                    }
+                    else if (key && key->code == sf::Keyboard::Key::A) {
+                        if (dest_index > 0) {
+                            dest_index--;
+                            dest = nodesInRegion[dest_index];
+                        }
+                    }
+                    else if (key && key->code == sf::Keyboard::Key::D) {
+                        if (dest_index < nodesInRegion.size() - 1) {
+                            dest_index++;
+                            dest = nodesInRegion[dest_index];
+                        }
                     }
                 }
-                else if (key && key->code == sf::Keyboard::Key::Right) {
-                    if (src_index < nodesInRegion.size() - 1) {
-                        src_index++;
-                        src = nodesInRegion[src_index];
-                    }
-                }
-                else if (key && key->code == sf::Keyboard::Key::A) {
-                    if (dest_index > 0) {
-                        dest_index--;
-                        dest = nodesInRegion[dest_index];
-                    }
-                }
-                else if (key && key->code == sf::Keyboard::Key::D) {
-                    if (dest_index < nodesInRegion.size() - 1) {
-                        dest_index++;
-                        dest = nodesInRegion[dest_index];
+                if (key && key->code == sf::Keyboard::Key::R) {
+                    pathFound = false;
+                    src_index = 0;
+                    dest_index = nodesInRegion.size() - 1;
+                    src = nodesInRegion[src_index];
+                    dest = nodesInRegion[dest_index];
+                    for (unsigned int i = 0; i < pathLines.size(); i++) {
+                        pathLines.erase(pathLines.begin() + i);
                     }
                 }
             }
