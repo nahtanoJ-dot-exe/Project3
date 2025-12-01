@@ -9,6 +9,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <cmath>
 #include <SFML/Graphics.hpp>
 using namespace std;
 
@@ -56,6 +57,9 @@ public:
     // versions that return the path
     vector<int> dijkstraPath(int src, int dest);
     vector<int> twoWayDijkstraPath(int src, int dest);
+
+    // A* algorithm, needs coordinates for the heuristic
+    vector<int> aStarPath(int src, int dest, const vector<NodeCoord>& coords);
 
     // Static methods to load DIMACS files
     static DIMACSData loadDIMACS(const string& coFile, const string& grFile);

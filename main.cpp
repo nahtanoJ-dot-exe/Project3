@@ -100,7 +100,18 @@ int main() {
     bool pathFound = false;
     bool animating = false;
 
-    cout << "\nPress SPACE to find path" << endl;
+    // algorithm selection: 1 = Dijkstra, 2 = A*
+    int selectedAlgo = 1;
+
+    cout << "\n===== CONTROLS =====" << endl;
+    cout << "SPACE - Run pathfinding algorithm" << endl;
+    cout << "1 - Select Dijkstra's Algorithm" << endl;
+    cout << "2 - Select A* Algorithm" << endl;
+    cout << "Arrow Keys - Move source node" << endl;
+    cout << "A/D - Move destination node" << endl;
+    cout << "R - Reset map" << endl;
+    cout << "====================" << endl;
+    cout << "\nCurrent Algorithm: Dijkstra" << endl;
     cout << "Source: " << src << " | Dest: " << dest << endl;
 
     while (window.isOpen()) {
@@ -111,31 +122,52 @@ int main() {
 
             if (event->is<sf::Event::KeyPressed>()) {
                 auto key = event->getIf<sf::Event::KeyPressed>();
+                // algorithm selection keys
+                if (key && key->code == sf::Keyboard::Key::Num1) {
+                    selectedAlgo = 1;
+                    cout << "\nSelected: Dijkstra's Algorithm" << endl;
+                }
+                else if (key && key->code == sf::Keyboard::Key::Num2) {
+                    selectedAlgo = 2;
+                    cout << "\nSelected: A* Algorithm" << endl;
+                }
+
                 if (!pathFound) {
                     if (key && key->code == sf::Keyboard::Key::Space) {
 
-                        // run two-way dijkstra
-                        cout << "\nRunning Two-Way Dijkstra..." << endl;
-                        auto start1 = chrono::high_resolution_clock::now();
-                        vector<int> path1 = graph.twoWayDijkstraPath(src, dest);
-                        auto end1 = chrono::high_resolution_clock::now();
-                        auto time1 = chrono::duration_cast<chrono::milliseconds>(end1 - start1);
+                        // run the selected algorithm
+                        if (selectedAlgo == 1) {
+                            // run dijkstra
+                            cout << "\n===== DIJKSTRA'S ALGORITHM =====" << endl;
+                            auto start = chrono::high_resolution_clock::now();
+                            path = graph.dijkstraPath(src, dest);
+                            auto end = chrono::high_resolution_clock::now();
+                            auto time = chrono::duration_cast<chrono::milliseconds>(end - start);
 
-                        // run one-way dijkstra
-                        cout << "Running One-Way Dijkstra..." << endl;
-                        auto start2 = chrono::high_resolution_clock::now();
-                        path = graph.dijkstraPath(src, dest);
-                        auto end2 = chrono::high_resolution_clock::now();
-                        auto time2 = chrono::duration_cast<chrono::milliseconds>(end2 - start2);
+                            cout << "Time: " << time.count() << " ms" << endl;
+                            cout << "Path length: " << path.size() << " nodes" << endl;
+                            cout << "=================================" << endl;
+                        }
+                        else if (selectedAlgo == 2) {
+                            // run A*
+                            cout << "\n===== A* ALGORITHM =====" << endl;
+                            auto start = chrono::high_resolution_clock::now();
+                            path = graph.aStarPath(src, dest, data.nodes);
+                            auto end = chrono::high_resolution_clock::now();
+                            auto time = chrono::duration_cast<chrono::milliseconds>(end - start);
 
-                        cout << "\n===== RESULTS =====" << endl;
-                        cout << "Two-Way Dijkstra: " << time1.count() << " ms (path: " << path1.size() << " nodes)" << endl;
-                        cout << "One-Way Dijkstra: " << time2.count() << " ms (path: " << path.size() << " nodes)" << endl;
-                        cout << "===================" << endl;
+                            cout << "Time: " << time.count() << " ms" << endl;
+                            cout << "Path length: " << path.size() << " nodes" << endl;
+                            cout << "=========================" << endl;
+                        }
 
-                        pathFound = true;
-                        animating = true;
-                        pathIndex = 0;
+                        if (!path.empty()) {
+                            pathFound = true;
+                            animating = true;
+                            pathIndex = 0;
+                        } else {
+                            cout << "No path found!" << endl;
+                        }
                     }
                     //moving src back and forth
                     else if (key && key->code == sf::Keyboard::Key::Left) {

@@ -5,7 +5,7 @@
 #include <algorithm>
 using namespace std;
 
-// Load coordinates from .co file
+// DIMACS coordinate graph
 vector<NodeCoord> Graph::loadCoordinates(const string& filename) {
     vector<NodeCoord> nodes;
     ifstream file(filename);
@@ -37,7 +37,7 @@ vector<NodeCoord> Graph::loadCoordinates(const string& filename) {
     return nodes;
 }
 
-// Load edges from .gr file
+// edges from road-d.NY.gr file
 vector<Edge> Graph::loadEdges(const string& filename, int& numNodes, int& numEdges) {
     vector<Edge> edges;
     ifstream file(filename);
@@ -50,7 +50,7 @@ vector<Edge> Graph::loadEdges(const string& filename, int& numNodes, int& numEdg
     string line;
     while (getline(file, line)) {
         if (line.empty() || line[0] == 'c') {
-            continue;  // Skip comments
+            continue;
         }
 
         if (line[0] == 'p') {
@@ -123,8 +123,9 @@ int Graph::dijkstra(int src, int dest, vector<sf::VertexArray>& lines, map<pair<
     while (!pq.empty()) {
         pair<int, int> current = pq.top();
         pq.pop();
-        int u = current.second; //vertex
+        int u = current.second;
 
+        // all assigned values from .co and .gr files
         for (auto it = adjList[u].begin(); it != adjList[u].end(); it++) {
             int v = it->first; //neighbor
             int w = it->second; //weight
@@ -368,4 +369,107 @@ vector<int> Graph::twoWayDijkstraPath(int src, int dest) {
     }
 
     return pathToMid;
+}
+
+// A* pathfinding algo
+// its basically dijkstra but it uses a heuristic to make it faster
+vector<int> Graph::aStarPath(int src, int dest, const vector<NodeCoord>& coords) {
+    vector<int> path;
+
+    // make sure src and dest actually exist
+    if (adjList[src].empty() || adjList[dest].empty()) {
+        return path;
+    }
+
+    // need the destination coords for the heuristic
+    double destX = coords[dest].rawX;
+    double destY = coords[dest].rawY;
+
+    // heuristic: just using euclidean distance
+    // straight line distance is always gonna be less than actual path so its fine
+    auto heuristic = [&](int node) -> double {
+        double dx = coords[node].rawX - destX;
+        double dy = coords[node].rawY - destY;
+        // idk why but i had to scale this down alot to make it work right
+        return sqrt(dx * dx + dy * dy) * 0.0001;
+    };
+
+    // pq with f score and node id
+    // f = g + h where g is dist so far and h is the heuristic
+    priority_queue<pair<double, int>, vector<pair<double, int>>, greater<pair<double, int>>> openSet;
+
+    // g score is the actual distance from start
+    vector<double> gScore(numVertices, numeric_limits<double>::infinity());
+
+    // f score is g + heuristic
+    vector<double> fScore(numVertices, numeric_limits<double>::infinity());
+
+    // for reconstructing the path later
+    vector<int> parent(numVertices, -1);
+
+    // keep track of nodes we already looked at
+    vector<bool> closedSet(numVertices, false);
+
+    // setup the starting node
+    gScore[src] = 0;
+    fScore[src] = heuristic(src);
+    openSet.push({fScore[src], src});
+
+    // main loop
+    while (!openSet.empty()) {
+        // grab the node with smallest f score
+        int current = openSet.top().second;
+        openSet.pop();
+
+        // skip if we already did this one
+        if (closedSet[current]) {
+            continue;
+        }
+
+
+        if (current == dest) {
+            break;
+        }
+
+        closedSet[current] = true;
+
+        // look at all the neighbors
+        for (auto& neighbor : adjList[current]) {
+            int next = neighbor.first;
+            float edgeWeight = neighbor.second;
+
+            if (closedSet[next]) {
+                continue;
+            }
+
+            // see if going thru current node is better
+            double tentativeG = gScore[current] + edgeWeight;
+
+            // update if its a better path
+            if (tentativeG < gScore[next]) {
+                parent[next] = current;
+                gScore[next] = tentativeG;
+                fScore[next] = tentativeG + heuristic(next);
+
+                // add to pq, there might be duplicate...need to test
+                openSet.push({fScore[next], next});
+            }
+        }
+    }
+
+    // if it doesnt find a path
+    if (gScore[dest] == numeric_limits<double>::infinity()) {
+        return path;
+    }
+
+    // build the path backwards from dest to src
+    int node = dest;
+    while (node != -1) {
+        path.push_back(node);
+        node = parent[node];
+    }
+
+    // flip it around so its src to dest
+    reverse(path.begin(), path.end());
+    return path;
 }
