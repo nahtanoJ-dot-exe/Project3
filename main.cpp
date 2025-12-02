@@ -129,6 +129,10 @@ int main() {
                 }
                 else if (key && key->code == sf::Keyboard::Key::Num2) {
                     selectedAlgo = 2;
+                    cout << "\nSelected: Two-Way Dijkstra's Algorithm" << endl;
+                }
+                else if (key && key->code == sf::Keyboard::Key::Num3) {
+                    selectedAlgo = 3;
                     cout << "\nSelected: A* Algorithm" << endl;
                 }
 
@@ -149,6 +153,18 @@ int main() {
                             cout << "=================================" << endl;
                         }
                         else if (selectedAlgo == 2) {
+                            // run two-way dijkstra
+                            cout << "\n===== TWO-WAY DIJKSTRA'S ALGORITHM =====" << endl;
+                            auto start = chrono::high_resolution_clock::now();
+                            path = graph.twoWayDijkstraPath(src, dest);
+                            auto end = chrono::high_resolution_clock::now();
+                            auto time = chrono::duration_cast<chrono::milliseconds>(end - start);
+
+                            cout << "Time: " << time.count() << " ms" << endl;
+                            cout << "Path length: " << path.size() << " nodes" << endl;
+                            cout << "=================================" << endl;
+                        }
+                        else if (selectedAlgo == 3) {
                             // run A*
                             cout << "\n===== A* ALGORITHM =====" << endl;
                             auto start = chrono::high_resolution_clock::now();
