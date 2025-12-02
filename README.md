@@ -4,8 +4,8 @@ project is to compare each of the algorithms' performances in terms of time as w
 work. 
 
 ## Description
-We used DIMACS to implement a map of New York, then converted that map into an undirected weighted graph with aroud 260,000
-nodes. The three pathfinding algorithms that can be compared are:
+We used DIMACS to implement a map of New York, then converted that map into an undirected weighted graph with over 266,000
+nodes and 733,000 edges. The three pathfinding algorithms that can be compared are:
 
 ---
 ### A* Search Algorithm
