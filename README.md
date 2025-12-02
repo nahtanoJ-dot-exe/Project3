@@ -6,6 +6,7 @@ work.
 ## Description
 We used DIMACS to implement a map of New York, then converted that map into an undirected weighted graph with aroud 260,000
 nodes. The three pathfinding algorithms that can be compared are:
+
 ---
 ### A* Search Algorithm
 ### Dijkstra's Shortest Path Algorithm
