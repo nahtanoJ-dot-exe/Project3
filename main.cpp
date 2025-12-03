@@ -105,8 +105,9 @@ int main() {
 
     cout << "\n===== CONTROLS =====" << endl;
     cout << "SPACE - Run pathfinding algorithm" << endl;
-    cout << "1 - Select Dijkstra's Algorithm" << endl;
-    cout << "2 - Select A* Algorithm" << endl;
+    cout << "1 - Select Dijkstra's Algorithm (one-way)" << endl;
+    cout << "2 - Select Dijkstra's Algorithm (two-way)" << endl;
+    cout << "3 - Select A* Algorithm" << endl;
     cout << "Arrow Keys - Move source node" << endl;
     cout << "A/D - Move destination node" << endl;
     cout << "R - Reset map" << endl;
