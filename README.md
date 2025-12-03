@@ -15,7 +15,7 @@ nodes and 733,000 edges. The three pathfinding algorithms that can be compared a
 
 ## How to Use 
 Once the program is running, the user has multiple options to change the source vertex, destination vertex, as well as which 
-algorithm will be used. Here are what each key does:
+algorithm will be used. Here is what each key does:
 |Key|Function|
 |-|-|
 |A|Move destination node (backwards)|
